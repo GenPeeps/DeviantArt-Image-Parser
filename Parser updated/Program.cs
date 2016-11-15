@@ -53,7 +53,7 @@ namespace Parser_updated
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message + ex.InnerException);
+                Console.WriteLine("Sorry, this artist couldn't be found.");
                 Console.ReadLine();
             }
             
