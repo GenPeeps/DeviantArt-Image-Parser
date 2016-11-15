@@ -9,7 +9,7 @@ namespace Parser_updated
 {
     class Dictionary
     {
-        public static Dictionary<int, string> formBasePicsDictionary(IEnumerable<HtmlNode> variants)
+        internal static Dictionary<int, string> formBasePicsDictionary(HtmlNodeCollection variants)
         {
             Dictionary<int, string> dictionary = new Dictionary<int, string>();
             foreach (var variant in variants)
@@ -17,6 +17,7 @@ namespace Parser_updated
                 int width = int.Parse(variant.GetAttributeValue("width", ""));
                 string url = variant.GetAttributeValue("src", "");
                 var pic = new Picture(width, url);
+                //если словарь уже содержит картинку с определенным width параметром - break
                 if (dictionary.ContainsKey(pic.Width))
                 {
                     break;

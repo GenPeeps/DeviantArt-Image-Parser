@@ -13,34 +13,50 @@ namespace Parser_updated
         static void Main(string[] args)
         {
             Console.WriteLine("Which artist would you like to find?");
-            string artist = Console.ReadLine();
-            string urlGallery = "http://" + artist + ".deviantart.com/gallery/?catpath=/";
-            HtmlDocument gallery = new HtmlDocument();
-            gallery.LoadHtml(NodesCollector.getResponseFromServer(urlGallery));
-
-            //Определить интервал между оффсетами: считаем сколько картинок на 1-ой странице
-            var picsPages = gallery.DocumentNode.SelectNodes("//div[contains(@class, 'tt-a tt-fh')]");
-            int PicsPerPage = picsPages.Count();
-
-            //первичное значение оффсет - 0
-            int currenPageOffset = 0;
-            //bool - есть ли картинки еще на странице
-            bool noPicsLeft;
-            //создаем переменную с текущей страницей
-            //var currentPageUrl = urlGallery + "?catpath=%2F&offset=0"; 
-            //качаем самую первую страницу
-            PictureCollector.DownloadBestPicOnPage(gallery, out noPicsLeft);
-
-            while (noPicsLeft == false)
+            string artist = Console.ReadLine().Trim().ToLower();
+            if (artist == "")
             {
-                //после первой страницы галереи - увеличиваем число оффсет
-                currenPageOffset += PicsPerPage;
-                //используем оффсет в адресе следующей страницы галереи
-                var currentPageUrl = urlGallery + "&offset=" + currenPageOffset;
-                //если закачка картинки вернет false, выходим из while. 
-                PictureCollector.DownloadBestPicOnPage(NodesCollector.getHtml(currentPageUrl), out noPicsLeft);                               
+                Console.WriteLine("The artist is not specified. Please restart the application and try again.");
+                Console.ReadLine();
+                return;
             }
+            string urlGallery = "http://" + artist + ".deviantart.com/gallery/?catpath=/";
+            try
+            {
+                HtmlDocument gallery = NodesCollector.getHtml(urlGallery);
+                //каждая страница имеет оффсет. Определить интервал между оффсетами - по числу картинок на 1-ой странице
+                var picsPages = gallery.DocumentNode.SelectNodes("//div[contains(@class, 'tt-a tt-fh')]");
+                int PicsPerPage = picsPages.Count();
 
+                //bool - есть ли на странице еще картинки для скачивания (out param. для метода DownloadBestPicOnPage)
+                bool noPicsLeft;
+                //качаем самую первую страницу
+                PictureCollector.DownloadBestPicOnPage(gallery, out noPicsLeft);
+
+                //первичное значение оффсет - 0
+                int currenPageOffset = 0;
+
+                while (noPicsLeft == false)
+                {
+                    //после первой страницы галереи - увеличиваем число оффсет
+                    currenPageOffset += PicsPerPage;
+                    //используем оффсет в адресе следующей страницы галереи
+                    var currentPageUrl = urlGallery + "&offset=" + currenPageOffset;
+                    //если закачка картинки вернет false, выходим из while - в галерее больше нет страниц. 
+                    PictureCollector.DownloadBestPicOnPage(NodesCollector.getHtml(currentPageUrl), out noPicsLeft);
+                }
+            }
+            catch (ArgumentNullException)
+            {
+                Console.WriteLine("Sorry, this artist has no deviations yet.");
+                Console.ReadLine();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message + ex.InnerException);
+                Console.ReadLine();
+            }
+            
         }
     }
 }

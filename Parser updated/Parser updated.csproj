@@ -48,7 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Dictionary.cs" />
-    <Compile Include="NodesCollectorcs.cs" />
+    <Compile Include="NodesCollector.cs" />
     <Compile Include="Picture.cs" />
     <Compile Include="PictureCollector.cs" />
     <Compile Include="Program.cs" />
