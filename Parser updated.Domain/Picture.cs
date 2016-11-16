@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Parser_updated
+namespace Parser_updated.Domain
 {
     class Picture
     {

@@ -8,12 +8,40 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Parser_updated
+namespace Parser_updated.Domain
 {
-    class PictureCollector
+    public static class PictureCollector
     {
         static Random rand = new Random();
-        public static void DownloadBestPicOnPage(HtmlDocument currentPage, out bool noPicsLeft)
+
+        public static void DownloadGallery(string urlGallery)
+        {
+            HtmlDocument gallery = NodesCollector.GetHtml(urlGallery);
+            //каждая страница имеет оффсет. Определить интервал между оффсетами - по числу картинок на 1-ой странице
+            var picsPages = gallery.DocumentNode.SelectNodes("//div[contains(@class, 'tt-a tt-fh')]");
+            int picsPerPage = picsPages.Count();
+            
+            //bool - есть ли на странице еще картинки для скачивания (out param. для метода DownloadBestPicOnPage)
+            bool noPicsLeft;
+
+            //Качаем самую первую страницу и задаем значение bool noPicsLeft. Если отрицательное - запускается блок while, и скачиваются остальные страницы.
+            DownloadBestPicOnPage(gallery, out noPicsLeft);
+
+            //Первичное значение оффсет - 0
+            int currenPageOffset = 0;
+
+            while (noPicsLeft == false)
+            {
+                //После первой страницы галереи -увеличиваем число оффсет
+                currenPageOffset += picsPerPage;
+                //Используем оффсет в адресе следующей страницы галереи
+                var currentPageUrl = urlGallery + "&offset=" + currenPageOffset;
+                //Eсли закачка картинки вернет false, выходим из while - в галерее больше нет страниц. 
+                DownloadBestPicOnPage(NodesCollector.GetHtml(currentPageUrl), out noPicsLeft);
+            }
+           
+        }
+        private static void DownloadBestPicOnPage(HtmlDocument currentPage, out bool noPicsLeft)
         {
             //Все url страниц картинок на общей странице
             var picsPages = currentPage.DocumentNode.SelectNodes("//div[contains(@class, 'tt-a tt-fh')]");
@@ -33,10 +61,9 @@ namespace Parser_updated
                     //Имя художника
                     string artistName = picPageUrl.Substring(7, picPageUrl.IndexOf(".") - 7);
                     //Название картинки - надо сделать reverse строки - и в ней искать от конца строки до первого "/". Результат снова сделать обратный reverse
-                    string reversedPicPageUrl = Reverse(picPageUrl);
-                    string reversedArtName = (reversedPicPageUrl.Substring(0, reversedPicPageUrl.IndexOf(@"/")));
-                    string artName = Reverse(reversedArtName);
+                    string artName = PictureCollectorTools.GetArtName(picPageUrl);
                     //***
+
                     //Картинка с лучшим разрешением на странице
                     string bestPic = getBestPic(picPageUrl);
                     if (bestPic != "")
@@ -44,13 +71,13 @@ namespace Parser_updated
                         double random = rand.Next(3, 6);
                         string intervalStr = random.ToString() + "00";
                         int intervalInt = int.Parse(intervalStr);
-                        Console.WriteLine($"Start: {intervalInt}");
+                        Console.WriteLine("Start:");
                         Console.WriteLine(bestPic);
                         //Пауза перед скачиванием
-                        Thread.Sleep(intervalInt);
-                        Console.WriteLine($"End");
+                        Thread.Sleep(intervalInt);                       
                         //Картинка скачивается
                         downloadPic(bestPic, artistName, artName);
+                        Console.WriteLine("End");
                     }
                     else
                     {
@@ -63,16 +90,9 @@ namespace Parser_updated
 
         }
 
-        private static string Reverse(string picPageUrl)
-        {
-            char[] charArray = picPageUrl.ToCharArray();
-            Array.Reverse(charArray);
-            return new string(charArray);
-        }
-
         private static string getBestPic(string picPageUrl)
         {
-            var htmlDocument = NodesCollector.getHtml(picPageUrl);
+            var htmlDocument = NodesCollector.GetHtml(picPageUrl);
             if (htmlDocument.DocumentNode.SelectSingleNode("//div[@class='nogo']") == null)
             {
                 //Задача - найти imgs из общего класса class="dev-view-deviation" - в каждом найти атрибут width и сравнить их друг с другом. Картинка с наибольшим атрибутом - лучшая.
@@ -88,7 +108,7 @@ namespace Parser_updated
                 //Вариант 2 с Xpath
                 var variantsXpath = htmlDocument.DocumentNode.SelectNodes("//div[@class='dev-view-deviation']/img");
 
-                Dictionary<int, string> dictionary = Dictionary.formBasePicsDictionary(variantsXpath);
+                Dictionary<int, string> dictionary = PictureCollectorTools.FormBasePicsDictionary(variantsXpath);
                 //Находим лучшую картинку из словаря
                 var bestPicIndex = dictionary.Keys.Max();
                 string bestPic = dictionary[bestPicIndex];
@@ -120,7 +140,7 @@ namespace Parser_updated
             }
             catch (Exception ex)
             {
-                Console.WriteLine("PictureCollector -- " + ex.Message);
+                throw ex;
             }
         }
     }

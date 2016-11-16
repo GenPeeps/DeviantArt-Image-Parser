@@ -1,0 +1,8 @@
+C:\Users\adoro\Desktop\Sasha code\Parser updated\Parser updated.Domain\bin\Debug\Parser updated.Domain.dll
+C:\Users\adoro\Desktop\Sasha code\Parser updated\Parser updated.Domain\bin\Debug\Parser updated.Domain.pdb
+C:\Users\adoro\Desktop\Sasha code\Parser updated\Parser updated.Domain\bin\Debug\HtmlAgilityPack.dll
+C:\Users\adoro\Desktop\Sasha code\Parser updated\Parser updated.Domain\bin\Debug\HtmlAgilityPack.pdb
+C:\Users\adoro\Desktop\Sasha code\Parser updated\Parser updated.Domain\bin\Debug\HtmlAgilityPack.xml
+C:\Users\adoro\Desktop\Sasha code\Parser updated\Parser updated.Domain\obj\Debug\Parser updated.Domain.csprojResolveAssemblyReference.cache
+C:\Users\adoro\Desktop\Sasha code\Parser updated\Parser updated.Domain\obj\Debug\Parser updated.Domain.dll
+C:\Users\adoro\Desktop\Sasha code\Parser updated\Parser updated.Domain\obj\Debug\Parser updated.Domain.pdb

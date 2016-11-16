@@ -7,3 +7,5 @@ C:\Users\adoro\Desktop\Sasha code\Parser updated\Parser updated\bin\Debug\HtmlAg
 C:\Users\adoro\Desktop\Sasha code\Parser updated\Parser updated\bin\Debug\HtmlAgilityPack.xml
 C:\Users\adoro\Desktop\Sasha code\Parser updated\Parser updated\obj\Debug\Parser updated.exe
 C:\Users\adoro\Desktop\Sasha code\Parser updated\Parser updated\obj\Debug\Parser updated.pdb
+C:\Users\adoro\Desktop\Sasha code\Parser updated\Parser updated\bin\Debug\Parser updated.Domain.dll
+C:\Users\adoro\Desktop\Sasha code\Parser updated\Parser updated\bin\Debug\Parser updated.Domain.pdb

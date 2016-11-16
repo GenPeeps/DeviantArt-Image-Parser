@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 using HtmlAgilityPack;
 using System.IO;
 
-namespace Parser_updated
+namespace Parser_updated.Domain
 {
-    class NodesCollector
+    public static class NodesCollector
     {
-        static public HtmlDocument getHtml(string url)
+        static public HtmlDocument GetHtml(string url)
         {
 
             var html = new HtmlDocument();
@@ -19,22 +19,22 @@ namespace Parser_updated
             html.LoadHtml(htmlString);
             return html;
         }
-        static public IEnumerable<HtmlNode> getNodes(HtmlDocument html)
+        public static IEnumerable<HtmlNode> GetNodes(HtmlDocument html)
         {
             var root = html.DocumentNode;
             var nodes = root.Descendants();
             return nodes;
         }
-        static public IEnumerable<HtmlNode> getNodes(string url)
+        public static IEnumerable<HtmlNode> GetNodes(string url)
         {
 
-            var html = getHtml(url);
+            var html = GetHtml(url);
             var root = html.DocumentNode;
             var nodes = root.Descendants();
             return nodes;
         }
 
-        static private string getResponseFromServer(string url)
+        private static string getResponseFromServer(string url)
         {
             string responseFromServer = "";
             try

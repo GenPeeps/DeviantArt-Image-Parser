@@ -5,11 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
 
-namespace Parser_updated
+namespace Parser_updated.Domain
 {
-    class Dictionary
+    class PictureCollectorTools
     {
-        internal static Dictionary<int, string> formBasePicsDictionary(HtmlNodeCollection variants)
+        internal static Dictionary<int, string> FormBasePicsDictionary(HtmlNodeCollection variants)
         {
             Dictionary<int, string> dictionary = new Dictionary<int, string>();
             foreach (var variant in variants)
@@ -26,6 +26,20 @@ namespace Parser_updated
                 { dictionary.Add(pic.Width, pic.Url); }
             }
             return dictionary;
+        }
+
+        internal static string GetArtName(string picPageUrl)
+        {
+            string reversedPicPageUrl = Reverse(picPageUrl);
+            string reversedArtName = (reversedPicPageUrl.Substring(0, reversedPicPageUrl.IndexOf(@"/")));
+            string artName = Reverse(reversedArtName);
+            return artName;
+        }
+        internal static string Reverse(string picPageUrl)
+        {
+            char[] charArray = picPageUrl.ToCharArray();
+            Array.Reverse(charArray);
+            return new string(charArray);
         }
     }
 }
